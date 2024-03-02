@@ -1,29 +1,17 @@
-import 'package:flutter/material.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:get/get.dart';
-import 'package:xxoo/app/data/services/network_service.dart';
-import 'package:xxoo/app/routes/app_pages.dart';
+
+import 'package:xxoo/app/data/models/product/product.dart';
+import 'package:xxoo/app/data/repository/product_repository.dart';
 
 class HomeController extends GetxController {
-  var textFieldCtrl = TextEditingController();
-  final _networkService = Get.find<NetworkService>();
+  ProductRepository productRepository;
 
-  auth() async {
-    String nickname = textFieldCtrl.text;
-    var regResult = await _networkService.registration(nickname);
-    if (!regResult) {
-      Get.showSnackbar(const GetSnackBar(
-        title: 'Регистрация неуспешна',
-        message: 'Попробуйте что нибудь с этим сделать',
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 1),
-      ));
-    }
-    print(nickname);
-  }
+  HomeController(this.productRepository);
 
-  @override
-  void onReady() {
-    super.onReady();
-    Get.offNamed(Routes.ROOMS);
+  RxList<Product> products = <Product>[].obs;
+
+  void getProducts() async {
+    products.value = await productRepository.getAll();
   }
 }

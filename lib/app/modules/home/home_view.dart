@@ -9,25 +9,38 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('HomeView'),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          const Text(
-            'Введите ник',
-            style: TextStyle(fontSize: 20),
+        appBar: AppBar(
+          title: const Text('HomeView'),
+          centerTitle: true,
+        ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                ElevatedButton(
+                  onPressed: () => controller.getProducts(),
+                  child: Text("Get "),
+                ),
+                Obx(() => ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: controller.products.length,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        final product = controller.products[index];
+                        return ListTile(
+                          title: Text(product.title),
+                          subtitle: Text("\$ ${product.price}"),
+                          leading: Image.network(
+                            product.thumbnail,
+                            height: 40,
+                            width: 40,
+                          ),
+                        );
+                      },
+                    )),
+              ],
+            ),
           ),
-          TextField(
-            controller: controller.textFieldCtrl,
-          ),
-          ElevatedButton(
-            onPressed: () => controller.auth(),
-            child: const Text("Войти"),
-          )
-        ],
-      ),
-    );
+        ));
   }
 }
